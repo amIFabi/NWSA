@@ -1,0 +1,3 @@
+10.100.78.62 v2c GenaroSalgadoAlarcon 3
+10.100.70.96 v2c LuisDanielMartinezBerumen 3
+10.100.69.62 v2c EricFabianPeraltaRamirez 4
