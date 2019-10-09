@@ -3,13 +3,12 @@ from os import remove
 from reportlab.pdfgen import canvas
 #cpuload 1.3.6.1.2.1.25.3.3.1.2.196608
 #ramload 1.3.6.1.2.1.
-#hrSystemProcess 1.3.6.1.2.1.25.1.6 
-#hrSytemMaxProcesses 1.3.6.1.2.1.25.6
+#hrSystemProcess 1.3.6.1.2.1.25.1.6.0
+#hrSytemMaxProcesses 1.3.6.1.2.1.25.7.0
 #active-fan: .1.3.6.1.4.1.14988.1.1.3.9.0
 #voltage: .1.3.6.1.4.1.14988.1.1.3.8.0
 #temperature: .1.3.6.1.4.1.14988.1.1.3.10.0
 #processor-temperature: .1.3.6.1.4.1.14988.1.1.3.11.0
-
 
 def startMonitor():
 	hosts = MongoAdmin.getHosts()
