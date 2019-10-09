@@ -2,13 +2,27 @@ import sys, rrdtool, time, os, MongoAdmin
 from pysnmp.hlapi import *
 from reportlab.pdfgen import canvas
 
+class OID:
+
+	oid = ""
+	name = ""
+	interface = False
+	desc = ""
+
+	def __init__(self, oid, name, interface, desc):
+		self.oid = oid
+		self.name = name
+		self.interface = interface
+		self.desc = desc
+
 def createRRD(rrdName, step="60", ds=["DS:ifOutUcastPkts:COUNTER:600:U:U"], rra="RRA:AVERAGE:0.5:1:600"):
-	rrdFile = "rrd/" + rrdName + ".rrd"
-	xmlFile = "xml/" + rrdName + ".xml"
+	rrdFile = rrdName + ".rrd"
+	xmlFile = rrdName + ".xml"
 	ret = rrdtool.create(rrdFile, "--start", "N", "--step", step, ds[0], rra)
 	if(len(ds) > 1):
 		for i in range(1, len(ds)):
-			addRRA(rrdFile, ds[i])
+			print(ds[i])
+			addDataSource(rrdFile, ds[i])
 	
 	#"DS:ipInReceives:COUNTER:600:U:U",
 	#"DS:icmpInEchoes:COUNTER:600:U:U",
@@ -46,19 +60,18 @@ def snmpGet(community, host, oid):
 	
 	return mib.split(sep=' = ')[1]
 
-def updateRRD(agent):
+def updateRRD(agent, oids):
 	while 1:
 		x = MongoAdmin.getHost(agent)
 		if(x == None):
 			break
 		value = []
 		row = "N:"
-		oids = MongoAdmin.getOIDS()
 		for mib in oids:
-			if(mib["if"]):
-				resp = snmpGet(x["community"], x["hostaddr"], (mib["oid"] + "." + x["if"]))
+			if(mib.interface):
+				resp = snmpGet(x["community"], x["hostaddr"], (mib.oid + "." + x["if"]))
 			else:
-				resp = snmpGet(x["community"], x["hostaddr"], mib["oid"])
+				resp = snmpGet(x["community"], x["hostaddr"], mib.oid)
 			
 			if(resp == "No Such Object currently exists at this OID"):
 				resp = "0"

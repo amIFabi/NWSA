@@ -23,11 +23,13 @@ def addAgent():
 	community = str(input("Introduce community: "))
 	interface = str(input("Introduce interface: "))
 	des = SNMPAdmin.snmpGet(community, hostaddr, ("1.3.6.1.2.1.2.2.1.2." + interface))
+	aux = des.split(" ")
+	des = aux[0]
 	rrdName = hostaddr + des
 	agent = {"community": community, "hostaddr": hostaddr, "if": interface, "desc": des, "rrdName": rrdName}
 
 	MongoAdmin.addHost(agent)
-	SNMPAdmin.createRRD(rrdName, ds=["DS:CPULoad1:GAUGE:600:0:100"], "RRA:AVERAGE:0.5:1:24")
+	SNMPAdmin.createRRD(rrdName, ds=["DS:CPULoad1:GAUGE:600:0:100"], rra="RRA:AVERAGE:0.5:1:24")
 
 	agentThread = threading.Thread(target=SNMPAdmin.updateRRD, args=(agent["rrdName"], ))
 	agentThread.start()
